@@ -1,0 +1,117 @@
+---
+title: "Team05Lab06"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Team05Lab06}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(Team05Lab06)
+library(Rcpp)
+```
+
+The `Team05Lab06` package provides three different ways to approach the knapsack problem, a discrete optimization problem where the goal is to find the knapsack with the largest value of elements added to it from a list of given items. Each item has a value ($v$) and a weight ($w$), the knapsack has a limited given weight $W$.
+
+The three approaches used to solve problem in the package are:
+
+\itemize{
+\item Brute force search: `brute_force_knapsack(x,W)`
+\item Dynamic programming: `knapsack_dynamic(x,W)`
+\item Greedy heuristic: `greedy_knapsack(x,W)`
+}
+
+All three functions needs two arguments:
+
+- `x` : a dataframe with all informations about the items available. Each row of the dataframe represents one elements, the column `v` contains its value while the column `w` contains its weight. 
+
+- `W` : is a positive value representing the maximum weight capacity of the knapsack.
+
+The `brute_force_knapsack` is the only function with an optional parameter called `parallel`. It's FALSE by default but if it is set to TRUE then the function should parallelize over the detected cores.
+
+
+## Brute force search: `brute_force_knapsack(x,W)`
+
+The `brute_force_knapsack`function goes through all the possible alternatives and return the maximum value found. It gives a correct answer to the problem in all the situation but its complexity is $O(2^n)$ because all possible $2^n$ combinations need to be evaluated. 
+
+To run the algorithm for $n=16$ objects it takes:
+
+
+
+```{r eval= TRUE, echo=FALSE}
+set.seed(42)
+n <- 2000
+knapsack_objects <- data.frame(
+    w=sample(1:4000, size = n, replace = TRUE),
+    v=runif(n = n, 0, 10000))
+```
+
+```{r eval= TRUE, echo=TRUE}
+system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500))
+```
+
+If `fast=TRUE`:
+
+```{r eval= FALSE}
+system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500, fast = TRUE))
+```
+
+the time is better compared to the slow one.
+
+## Dynamic programming: `knapsack_dynamic(x,W)`
+
+The `knapsack_dynamic` is based on the fact that all weights are nonnegative integers and they are all less than $W$. In this approach it's defined a matrix where in each position `m[i,w]` is stored the maximum value that can be attained with weight less than or equal to `w` using items up to `i`. The maximum value is found calculating `m[n,W]`.
+It gives a correct answer to the problem in all the situation but its complexity is $O(Wn)$ less than the `brute_force_knapsack`function. 
+
+To run the algorithm for $n=500$ objects it takes:
+
+```{r}
+system.time(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500))
+```
+
+## Greedy Heuristic: `greedy_knapsack(x,W)`
+
+The `greedy_knapsack`function doesn't give the exact result for the problem but it reduces the computational complexity for the problem. This approach sorts the items in decreasing order of value per unit of weight $v_i/w_i$ and it proceeds to insert them into the sack until there is not more space. 
+The complexity of this problem is $O(nlogn)$. 
+
+To run the algorithm for $n=1000000$ objects it takes:
+
+```{r eval = TRUE}
+system.time(greedy_knapsack(x = knapsack_objects[1:1000000,], W = 3500))
+```
+
+Improving the code with function as `lapply()` or parallelizing helps to get faster results and a better time of computation. The time slows down when big structure are called too many times, as big dataframes, to speed up the code it's always better to evitate saving too many unused data. 
+
+## Examples
+
+Different functions don't give always the same results:
+
+```{r eval = TRUE}
+greedy_knapsack(x = knapsack_objects[1:8,], W = 3500)
+```
+```{r eval = FALSE}
+brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500)
+```
+```{r eval = TRUE}
+knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500)
+```
+
+Comparing the times of the three functions: 
+
+```{r eval = TRUE}
+system.time(greedy_knapsack(x = knapsack_objects[1:16,], W = 3500))
+```
+```{r eval = FALSE}
+system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500))
+```
+```{r}
+system.time(knapsack_dynamic(x = knapsack_objects[1:16,], W = 3500))
+```
