@@ -54,7 +54,7 @@ knapsack_objects <- data.frame(
     v=runif(n = n, 0, 10000))
 ```
 
-```{r eval= TRUE, echo=TRUE}
+  ```{r eval= FALSE, echo=TRUE}
 system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500))
 ```
 
