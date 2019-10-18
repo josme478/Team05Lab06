@@ -14,21 +14,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup,echo=FALSE,warning=FALSE}
 library(Team05Lab06)
 library(Rcpp)
 library(digest)
 ```
 
-The `Team05Lab06` package provides three different ways to approach the knapsack problem, a discrete optimization problem where the goal is to find the knapsack with the largest value of elements added to it from a list of given items. Each item has a value ($v$) and a weight ($w$), the knapsack has a limited given weight $W$.
+The package `Team05Lab06` provides three different ways to approach the knapsack problem, a discrete optimization problem where the goal is to find the knapsack with the largest value of elements added to it from a list of given items. Each item has a value ($v$) and a weight ($w$), the knapsack has a limited given weight $W$.
 
-The three approaches used to solve problem in the package are:
+The three approaches used to solve problem in the package are:  
 
-\itemize{
-\item Brute force search: `brute_force_knapsack(x,W)`
-\item Dynamic programming: `knapsack_dynamic(x,W)`
-\item Greedy heuristic: `greedy_knapsack(x,W)`
-}
+1. Brute force search: `brute_force_knapsack(x,W,fast = FALSE)`
+2. Dynamic programming: `knapsack_dynamic(x,W)`
+3. Greedy heuristic: `greedy_knapsack(x,W)`
+
 
 All three functions needs two arguments:
 
@@ -36,7 +35,7 @@ All three functions needs two arguments:
 
 - `W` : is a positive value representing the maximum weight capacity of the knapsack.
 
-The `brute_force_knapsack` is the only function with an optional parameter called `parallel`. It's FALSE by default but if it is set to TRUE then the function should parallelize over the detected cores.
+The `brute_force_knapsack` is the only function with an optional parameter called `fast`. It's FALSE by default but if it is set to TRUE then the function should take a slighty optimized approach.
 
 
 ## Brute force search: `brute_force_knapsack(x,W)`
@@ -44,8 +43,6 @@ The `brute_force_knapsack` is the only function with an optional parameter calle
 The `brute_force_knapsack`function goes through all the possible alternatives and return the maximum value found. It gives a correct answer to the problem in all the situation but its complexity is $O(2^n)$ because all possible $2^n$ combinations need to be evaluated. 
 
 To run the algorithm for $n=16$ objects it takes:
-
-
 
 ```{r eval= TRUE, echo=FALSE}
 set.seed(42)
@@ -55,13 +52,15 @@ knapsack_objects <- data.frame(
     v=runif(n = n, 0, 10000))
 ```
 
-  ```{r eval= FALSE, echo=TRUE}
+  ```{r eval= TRUE, echo=TRUE}
 system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500))
 ```
 
+After profiling the code, a couple optimizations were made on the algorithm using Rcpp and re-accomodating the loops. And we implemented a new algorithm using the following parameter: 
+
 If `fast=TRUE`:
 
-```{r eval= FALSE, echo=TRUE}
+```{r eval= TRUE, echo=TRUE}
 system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500, fast = TRUE))
 ```
 
@@ -93,16 +92,16 @@ Improving the code with function as `lapply()` or parallelizing helps to get fas
 
 ## Examples
 
-Different functions don't give always the same results:
+Different functions don't give always the same results (Specifically the greedy algorithm, which prioritizes speed over the exact result):
 
 ```{r eval = TRUE}
-greedy_knapsack(x = knapsack_objects[1:8,], W = 3500)
-```
-```{r eval = FALSE}
 brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500)
 ```
 ```{r eval = TRUE}
 knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500)
+```
+```{r eval = TRUE}
+greedy_knapsack(x = knapsack_objects[1:8,], W = 3500)
 ```
 
 Comparing the times of the three functions: 
@@ -110,7 +109,7 @@ Comparing the times of the three functions:
 ```{r eval = TRUE}
 system.time(greedy_knapsack(x = knapsack_objects[1:16,], W = 3500))
 ```
-```{r eval = FALSE}
+```{r eval = TRUE}
 system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500))
 ```
 ```{r}
