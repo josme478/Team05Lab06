@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(Team05Lab06)
 library(Rcpp)
+library(digest)
 ```
 
 The `Team05Lab06` package provides three different ways to approach the knapsack problem, a discrete optimization problem where the goal is to find the knapsack with the largest value of elements added to it from a list of given items. Each item has a value ($v$) and a weight ($w$), the knapsack has a limited given weight $W$.
@@ -60,7 +61,7 @@ system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500))
 
 If `fast=TRUE`:
 
-```{r eval= FALSE}
+```{r eval= FALSE, echo=TRUE}
 system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500, fast = TRUE))
 ```
 

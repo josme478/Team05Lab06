@@ -7,7 +7,7 @@ Authors@R: c(person("Jose", "Mendez", role = c("aut", "cre"), email = "josme478@
     person("Sara", "Salahshour", role = "aut", email = "sarsa293@student.liu.se"),
     person("Atieh", "Khaleghi", role = "aut", email = "atikh281@student.liu.se"))
 Description: Answers for Lab06.
-License: GPL (>= 2)
+License: file LICENSE
 Encoding: UTF-8
 Imports: Rcpp (>= 1.0.2)
 LinkingTo: Rcpp
@@ -15,5 +15,6 @@ RoxygenNote: 6.1.1
 Suggests: 
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    digest
 VignetteBuilder: knitr

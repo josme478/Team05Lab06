@@ -21,5 +21,8 @@ A function that solves the knapsack problem using a greedy approach.
 none
 }
 \examples{
-greedy_knapsack(x = knapsack_objects[1:800,], W = 3500)
+set.seed(42)
+x <- data.frame(w=sample(1:4000, size = 800, replace = TRUE), v=runif(n = 10, 0, 10000))
+W <- 3500
+greedy_knapsack(x, W)
 }

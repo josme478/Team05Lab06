@@ -10,6 +10,8 @@ brute_force_knapsack(x, W, fast = FALSE)
 \item{x}{A data frame object, containing two variables \code{v} and \code{w}. \code{v} contains the value of the object n and \code{w} its value.}
 
 \item{W}{An integer, representing the capacity of the knapsack.}
+
+\item{fast}{Boolean, indicating if the optimized version of the algorithm should be run.}
 }
 \value{
 A list with two objects: \code{$value} which is the value of the knapsack and an object \code{$elements} which are the elements contained in the knapsack.
@@ -21,8 +23,8 @@ A function that solves the knapsack problem using a brute force approach.
 none
 }
 \examples{
-\\code{set.seed(42)}
-\\code{x <- data.frame(w=sample(1:4000, size = 10, replace = TRUE), v=runif(n = 10, 0, 10000))}
-\\code{W <- 3500}
-\\code{brute_force_knapsack(x, W)}
+set.seed(42)
+x <- data.frame(w=sample(1:4000, size = 10, replace = TRUE), v=runif(n = 10, 0, 10000))
+W <- 3500
+brute_force_knapsack(x, W)
 }
